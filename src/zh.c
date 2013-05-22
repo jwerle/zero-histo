@@ -53,11 +53,9 @@ void
 zh_server_listen (zh_server_t *server) {
 	while (1) {
 		puts("yesss");
-		char buffer [10];
-    zmq_recv (server->socket, buffer, 10, 0);
-		// s_recv(server->socket);
-		// s_console("Got message");
-		// puts("yes");
+		s_recv(server->socket);
+		s_console("Got message");
+		puts("yes");
 
 		sleep(1);
 	}
