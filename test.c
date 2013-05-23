@@ -53,12 +53,16 @@ main (int argc, char * argv[]) {
 		zh_debug("client connecting to host server");
 		zh_client_connect(client);
 		
+		sprintf(str, "message count '%d'", n_messages);
+		zh_debug(str);
+
 		for (int i = 0; i < n_messages; ++i) {
-			char msg[256];
-			sprintf(msg, "messaging host server: '%s'", messages[i]);
-			zh_debug(msg);
+			sprintf(str, "messaging host server: (%d), '%s'", i, messages[i]);
+			zh_debug(str);
 			zh_client_message(client, messages[i]);
 		}
+
+		zh_client_disconnect(client);
 
 	}
 

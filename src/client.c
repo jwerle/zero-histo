@@ -35,7 +35,8 @@ void
 zh_client_connect (zh_client_t *client) {
 	int rc = zmq_connect (client->socket, client->host);
 	if (rc != 0) zh_error("zh_client_connect");
-	zmq_setsockopt(client->socket, ZMQ_RCVTIMEO, ZH_CLIENT_DEFAULT_RECV_TIMEOUT, 0);
+	int timeout = ZH_CLIENT_DEFAULT_RECV_TIMEOUT;
+	zmq_setsockopt(client->socket, ZMQ_RCVTIMEO, (const void *)timeout, 0);
 }
 
 void
@@ -44,4 +45,10 @@ zh_client_message (zh_client_t *client, char *message) {
 	if (size != strlen(message)) zh_error("zh_client_message");
 	char *buffer = s_recv(client->socket);
 	if (buffer == NULL) zh_error("zh_client_message");
+}
+
+void
+zh_client_disconnect (zh_client_t *client) {
+	zmq_close (client->socket);
+  zmq_ctx_destroy (client->context);
 }

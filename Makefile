@@ -6,25 +6,21 @@ BIN = zero-histo
 LIB = /usr/local/lib
 CFLAGS = -L$(LIB) -lzmq
 
-release: zero-histo
+release: test zero-histo
 	@:
 
 zero-histo: $(SRC) test.c
 	@echo $^
 	@$(CC) $^ -std=c99 -lm -I deps -o release/$@ $(CFLAGS)
 
-install: $(BIN)
-	@install $(BIN) $(PREFIX)/bin
-
-uninstall:
-	@rm $(PREFIX)/bin/$(BIN)
-
 clean:
 	@rm -f $(BIN) $(OBJ)
 	@rm -rf release/*
 
-test: $(SRC)
+build-test: $(SRC)
 	@$(CC) $^ test.c -std=c99 -lm -I deps -o test $(CFLAGS)
-	@./test server & ./test
 
-.PHONY: clean install uninstall test.c test
+test: build-test
+	@./test server & ./test && exit
+
+.PHONY: clean test.c test

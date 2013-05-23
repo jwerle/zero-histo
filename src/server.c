@@ -57,7 +57,7 @@ zh_server_listen (zh_server_t *server, void (*callback) (char[])) {
 		zh_debug("Got message");
 		zh_server_reply_ok(server);
 		callback(buffer);
-		sleep(1);
+		s_sleep(500);
 	}
 }
 
