@@ -7,6 +7,19 @@
 #include "src/helpers.h"
 #include "src/zh.h"
 
+char *messages[] = {
+	"hi",
+	"hey",
+	"hello",
+	"yo",
+	"aye",
+	"suppp",
+	"whatttuppp"
+};
+
+int requests = 0;
+int n_messages = sizeof(messages) / sizeof(char *);
+
 int
 main (int argc, char * argv[]) {
 	init_test();
@@ -39,13 +52,12 @@ main (int argc, char * argv[]) {
 
 		zh_debug("client connecting to host server");
 		zh_client_connect(client);
-
-		int n = 10;
 		
-		for (int i = 0; i < n; ++i) {
-			zh_debug("messaging host server");
-			zh_client_message(client, "yooooo");
-			s_sleep(100);
+		for (int i = 0; i < n_messages; ++i) {
+			char msg[256];
+			sprintf(msg, "messaging host server: '%s'", messages[i]);
+			zh_debug(msg);
+			zh_client_message(client, messages[i]);
 		}
 
 	}
@@ -54,14 +66,10 @@ main (int argc, char * argv[]) {
 	pass_test();
 }
 
-int requests = 0;
-
 void
 listen_callback (char buffer[]) {
 	s_console(buffer);
-	char *str;
-	//zh_debug(str);
-	if (++requests == 10) pass_test();
+	if (++requests == n_messages) pass_test();
 }
 
 

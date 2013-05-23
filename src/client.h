@@ -1,6 +1,14 @@
 #ifndef _ZH_CLIENT_H
 #define _ZH_CLIENT_H
 
+/*
+ * Default buffer size.
+ */
+
+#ifndef ZH_CLIENT_DEFAULT_RECV_TIMEOUT
+#define ZH_CLIENT_DEFAULT_RECV_TIMEOUT "2000"
+#endif
+
 /**
  * ZH Client struct
  */

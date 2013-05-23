@@ -55,8 +55,8 @@ zh_server_listen (zh_server_t *server, void (*callback) (char[])) {
 		char *buffer = s_recv(server->socket);
 		if (buffer == NULL) zh_error("zh_server_listen");
 		zh_debug("Got message");
-		callback(buffer);
 		zh_server_reply_ok(server);
+		callback(buffer);
 		sleep(1);
 	}
 }

@@ -34,12 +34,14 @@ zh_client_new (char *host) {
 void
 zh_client_connect (zh_client_t *client) {
 	int rc = zmq_connect (client->socket, client->host);
-	printf("%d\n", rc);
 	if (rc != 0) zh_error("zh_client_connect");
+	zmq_setsockopt(client->socket, ZMQ_RCVTIMEO, ZH_CLIENT_DEFAULT_RECV_TIMEOUT, 0);
 }
 
 void
 zh_client_message (zh_client_t *client, char *message) {
 	int size = s_send (client->socket, message);
 	if (size != strlen(message)) zh_error("zh_client_message");
+	char *buffer = s_recv(client->socket);
+	if (buffer == NULL) zh_error("zh_client_message");
 }
