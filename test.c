@@ -22,13 +22,12 @@ int n_messages = sizeof(messages) / sizeof(char *);
 
 int
 main (int argc, char * argv[]) {
-	init_test();
-
 	char str[256];
 	char *server_host = "tcp://*:5555";
 	char *client_host = "tcp://localhost:5555";
 	
 	if (argc > 1 && strcmp(argv[1], "server") == 0) {
+		init_test("server");
 		zh_server_t *server = zh_server_new(server_host);
 	
 		sprintf(str, "server->host = %s", server->host);
@@ -43,6 +42,7 @@ main (int argc, char * argv[]) {
 		zh_server_listen(server, &listen_callback);
 
 	} else {
+		init_test("client");
 		zh_client_t *client = zh_client_new(client_host);
 		
 		sprintf(str, "client->host = %s", client->host);
@@ -75,8 +75,8 @@ listen_callback (char buffer[]) {
 
 
 void 
-init_test () {
-	puts("\nzero-histo: starting test\n-------------------------\n");
+init_test (char *name) {
+	printf("\nzero-histo: starting '%s' test\n-------------------------\n", name);
 }
 
 void

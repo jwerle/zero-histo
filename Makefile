@@ -25,5 +25,6 @@ clean:
 
 test: $(SRC)
 	@$(CC) $^ test.c -std=c99 -lm -I deps -o test $(CFLAGS)
+	@./test server & ./test
 
 .PHONY: clean install uninstall test.c test
