@@ -1,9 +1,6 @@
 #ifndef ZERO_HISTO_TEST_H
 #define ZERO_HISTO_TEST_H
 
-void
-debug (char *message);
-
 void 
 init_test ();
 
@@ -12,5 +9,8 @@ pass_test ();
 
 void
 fail_test ();
+
+void
+listen_callback (char buffer[]);
 
 #endif

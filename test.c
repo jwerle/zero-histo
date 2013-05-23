@@ -4,35 +4,67 @@
 #include <string.h>
 #include <term.h>
 #include "test.h"
+#include "src/helpers.h"
 #include "src/zh.h"
 
 int
-main (void) {
+main (int argc, char * argv[]) {
 	init_test();
+
 	char str[256];
-	char *host = "tcp://*:5555";
-	zh_server_t *server = zh_server_new(host);
+	char *server_host = "tcp://*:5555";
+	char *client_host = "tcp://localhost:5555";
+	
+	if (argc > 1 && strcmp(argv[1], "server") == 0) {
+		zh_server_t *server = zh_server_new(server_host);
+	
+		sprintf(str, "server->host = %s", server->host);
+		zh_debug(str);
+		
+		assert(server->host == server_host);
 
-	sprintf(str, "server->host = %s", server->host);
-	debug(str);
+		zh_debug("binding server");
+		zh_server_bind(server);
 
-	assert(server->host == host);
+		zh_debug("listening on connection");
+		zh_server_listen(server, &listen_callback);
 
-	debug("binding server");
-	zh_server_bind(server);
+	} else {
+		zh_client_t *client = zh_client_new(client_host);
+		
+		sprintf(str, "client->host = %s", client->host);
+		zh_debug(str);
 
-	debug("listening on connection");
-	zh_server_listen(server);
+		assert(client->host == client_host);
+
+		zh_debug("client connecting to host server");
+		zh_client_connect(client);
+
+		int n = 10;
+		
+		for (int i = 0; i < n; ++i) {
+			zh_debug("messaging host server");
+			zh_client_message(client, "yooooo");
+			s_sleep(100);
+		}
+
+	}
 
 	// pass test
 	pass_test();
 }
 
+int requests = 0;
+
 void
-debug (char *message) {
-	//printf("  debug: ");
-	puts(message);
+listen_callback (char buffer[]) {
+	s_console(buffer);
+	char *str;
+	//zh_debug(str);
+	if (++requests == 10) pass_test();
 }
+
+
 
 void 
 init_test () {
