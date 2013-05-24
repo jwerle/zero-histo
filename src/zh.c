@@ -14,12 +14,12 @@ zh (void) {
 
 void
 zh_error (char *func) {
-	printf("error: '%s': %s\n", func, zmq_strerror (errno));
+  printf("error: '%s': %s\n", func, zmq_strerror (errno));
   abort();
 }
 
 void
 zh_debug (char *message) {
-	printf("  debug: ");
-	puts(message);
+  printf("  debug: ");
+  puts(message);
 }

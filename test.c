@@ -8,98 +8,98 @@
 #include "src/zh.h"
 
 char *messages[] = {
-	"hi",
-	"hey",
-	"hello",
-	"yo",
-	"aye",
-	"suppp",
-	"whatttuppp"
+  "hi",
+  "hey",
+  "hello",
+  "yo",
+  "aye",
+  "suppp",
+  "whatttuppp"
 };
 
-int requests = 0;
-int n_messages = sizeof(messages) / sizeof(char *);
+int requests = 0
+  , n_messages = sizeof(messages) / sizeof(char *);
 
 int
 main (int argc, char * argv[]) {
-	char str[256];
-	char *server_host = "tcp://*:5555";
-	char *client_host = "tcp://localhost:5555";
-	
-	if (argc > 1 && strcmp(argv[1], "server") == 0) {
-		init_test("server");
-		zh_server_t *server = zh_server_new(server_host);
-	
-		sprintf(str, "server->host = %s", server->host);
-		zh_debug(str);
-		
-		assert(server->host == server_host);
+  char str[256]
+     , *server_host = "tcp://*:5555"
+     , *client_host = "tcp://localhost:5555";
+  
+  if (argc > 1 && strcmp(argv[1], "server") == 0) {
+    init_test("server");
+    zh_server_t *server = zh_server_new(server_host);
+  
+    sprintf(str, "server->host = %s", server->host);
+    zh_debug(str);
+    
+    assert(server->host == server_host);
 
-		zh_debug("binding server");
-		zh_server_bind(server);
+    zh_debug("binding server");
+    zh_server_bind(server);
 
-		zh_debug("listening on connection");
-		zh_server_listen(server, &listen_callback);
+    zh_debug("listening on connection");
+    zh_server_listen(server, &listen_callback);
 
-	} else {
-		init_test("client");
-		zh_client_t *client = zh_client_new(client_host);
-		
-		sprintf(str, "client->host = %s", client->host);
-		zh_debug(str);
+  } else {
+    init_test("client");
+    zh_client_t *client = zh_client_new(client_host);
+    
+    sprintf(str, "client->host = %s", client->host);
+    zh_debug(str);
 
-		assert(client->host == client_host);
+    assert(client->host == client_host);
 
-		zh_debug("client connecting to host server");
-		zh_client_connect(client);
-		
-		sprintf(str, "message count '%d'", n_messages);
-		zh_debug(str);
+    zh_debug("client connecting to host server");
+    zh_client_connect(client);
+    
+    sprintf(str, "message count '%d'", n_messages);
+    zh_debug(str);
 
-		for (int i = 0; i < n_messages; ++i) {
-			sprintf(str, "messaging host server: (%d), '%s'", i, messages[i]);
-			zh_debug(str);
-			zh_client_message(client, messages[i]);
-		}
+    for (int i = 0; i < n_messages; ++i) {
+      sprintf(str, "messaging host server: (%d), '%s'", i, messages[i]);
+      zh_debug(str);
+      zh_client_message(client, messages[i]);
+    }
 
-		zh_client_disconnect(client);
+    zh_client_disconnect(client);
 
-	}
+  }
 
-	// pass test
-	pass_test();
+  // pass test
+  pass_test();
 }
 
 void
 listen_callback (char buffer[]) {
-	s_console(buffer);
-	if (++requests == n_messages) pass_test();
+  s_console(buffer);
+  if (++requests == n_messages) pass_test();
 }
 
 
 
 void 
 init_test (char *name) {
-	printf("\nzero-histo: starting '%s' test\n-------------------------\n", name);
+  printf("\nzero-histo: starting '%s' test\n-------------------------\n", name);
 }
 
 void
 fail_test () {
-	term_reset();
-	printf("\n  \e[31m\u2717 ");
-	term_reset();
-	term_color("red");
-	puts("fail");
-	term_reset();
+  term_reset();
+  printf("\n  \e[31m\u2717 ");
+  term_reset();
+  term_color("red");
+  puts("fail");
+  term_reset();
 }
 
 void
 pass_test () {
-	term_reset();
-	printf("\n  \e[32m\u2713 ");
-	term_reset();
-	term_color("cyan");
-	puts("pass");
-	term_reset();
-	exit(0);
+  term_reset();
+  printf("\n  \e[32m\u2713 ");
+  term_reset();
+  term_color("cyan");
+  puts("pass");
+  term_reset();
+  exit(0);
 }

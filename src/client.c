@@ -15,40 +15,50 @@
  */
 zh_client_t *
 zh_client_new (char *host) {
-	// initialize a new zh_client_t
-	zh_client_t *client = malloc(sizeof(zh_client_t));
-	// set the host
-	client->host = host; 
-	// create context
-	client->context = zmq_ctx_new();
-	assert(client->context);
-	// create responder socket
-	client->socket = zmq_socket(client->context, ZMQ_REQ);
-	assert(client->socket);
-	// set unique ID on socket
-	//s_set_id(client->socket);
-	// return to caller
-	return client;
+  // initialize a new zh_client_t
+  zh_client_t *client = malloc(sizeof(zh_client_t));
+  // set the host
+  client->host = host; 
+  // create context
+  client->context = zmq_ctx_new();
+  // assert context integrity
+  assert(client->context);
+  // create responder socket
+  client->socket = zmq_socket(client->context, ZMQ_REQ);
+  // assert socket integrity
+  assert(client->socket);
+  // set unique ID on socket
+  s_set_id(client->socket);
+  // return to caller
+  return client;
 }
 
 void
 zh_client_connect (zh_client_t *client) {
-	int rc = zmq_connect (client->socket, client->host);
-	if (rc != 0) zh_error("zh_client_connect");
-	int timeout = ZH_CLIENT_DEFAULT_RECV_TIMEOUT;
-	zmq_setsockopt(client->socket, ZMQ_RCVTIMEO, (const void *)timeout, 0);
+  int rc, timeout;
+
+  rc = zmq_connect (client->socket, client->host);
+  timeout = ZH_CLIENT_DEFAULT_RECV_TIMEOUT;
+
+  if (rc != 0) zh_error("zh_client_connect");
+
+  zmq_setsockopt(client->socket, ZMQ_RCVTIMEO, (const void *)timeout, 0);
 }
 
 void
 zh_client_message (zh_client_t *client, char *message) {
-	int size = s_send (client->socket, message);
-	if (size != strlen(message)) zh_error("zh_client_message");
-	char *buffer = s_recv(client->socket);
-	if (buffer == NULL) zh_error("zh_client_message");
+  int size;
+  char *buffer;
+
+  size = s_send (client->socket, message);
+  buffer = s_recv(client->socket);
+
+  if (size != strlen(message)) zh_error("zh_client_message");
+  else if (buffer == NULL) zh_error("zh_client_message");
 }
 
 void
 zh_client_disconnect (zh_client_t *client) {
-	zmq_close (client->socket);
+  zmq_close (client->socket);
   zmq_ctx_destroy (client->context);
 }

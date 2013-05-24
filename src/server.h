@@ -6,10 +6,9 @@
  */
 typedef struct {
 
-	char *host;
-	void *context;
-	void *socket;
-	bool bound;
+  char *host;
+  void *context
+     , *socket;
 
 } zh_server_t;
 
