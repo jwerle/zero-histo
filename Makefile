@@ -1,4 +1,6 @@
-SRC = $(wildcard src/*.c)
+
+# filter out main.c
+SRC = $(filter-out src/main.c, $(wildcard src/*.c))
 SRC += $(wildcard deps/*.c)
 OBJ = $(SRC:.c=.o)
 PREFIX=/usr/local
@@ -7,20 +9,22 @@ LIB = /usr/local/lib
 CFLAGS = -L$(LIB) -lzmq
 
 release: test zero-histo
-  @:
+	@:
 
-zero-histo: $(SRC) test.c
-  @echo $^
-  @$(CC) $^ -std=c99 -lm -I deps -o release/$@ $(CFLAGS)
+dist: zero-histo
+	@:
+
+zero-histo: $(SRC)
+	@$(CC) $^ src/main.c -std=c99 -lm -I deps -o release/$@ $(CFLAGS)
 
 clean:
-  @rm -f $(BIN) $(OBJ)
-  @rm -rf release/*
+	@rm -f $(BIN) $(OBJ)
+	@rm -rf release/*
 
 build-test: $(SRC)
-  @$(CC) $^ test.c -std=c99 -lm -I deps -o test $(CFLAGS)
+	@$(CC) $^ test.c -std=c99 -lm -I deps -o test $(CFLAGS)
 
 test: build-test
-  @./test server & ./test && exit
+	@./test server & ./test && exit
 
 .PHONY: clean test.c test

@@ -7,17 +7,34 @@
 #include "src/helpers.h"
 #include "src/zh.h"
 
-char *messages[] = {
-  "hi",
-  "hey",
-  "hello",
-  "yo",
-  "aye",
-  "suppp",
-  "whatttuppp"
-};
+/**
+ * test name
+ */
 
-int requests = 0
+char suite[256]
+
+/**
+ * client messages
+ */
+   , *messages[] = {
+      "hi",
+      "hey",
+      "hello",
+      "yo",
+      "aye",
+      "suppp",
+      "whatttuppp"
+    };
+
+/**
+ * number of incoming server request
+ */
+
+int n_requests = 0
+
+/**
+ * number of message to send
+ */
   , n_messages = sizeof(messages) / sizeof(char *);
 
 int
@@ -70,33 +87,49 @@ main (int argc, char * argv[]) {
   pass_test();
 }
 
+/**
+ * callback passed to `zh_server_listen`
+ */
+
 void
 listen_callback (char buffer[]) {
   s_console(buffer);
-  if (++requests == n_messages) pass_test();
+  if (++n_requests == n_messages) pass_test();
 }
 
-
+/**
+ * test initializer
+ */
 
 void 
 init_test (char *name) {
+  sprintf(suite, "%s_test", name);
   printf("\nzero-histo: starting '%s' test\n-------------------------\n", name);
 }
+
+/**
+ * fails a test
+ */
 
 void
 fail_test () {
   term_reset();
-  printf("\n  \e[31m\u2717 ");
+  printf("  %s: \e[31m\u2717 ", suite);
   term_reset();
   term_color("red");
   puts("fail");
   term_reset();
+  exit(1);
 }
 
+/**
+ * passes a test
+ */
+ 
 void
 pass_test () {
   term_reset();
-  printf("\n  \e[32m\u2713 ");
+  printf("  %s: \e[32m\u2713 ", suite);
   term_reset();
   term_color("cyan");
   puts("pass");
