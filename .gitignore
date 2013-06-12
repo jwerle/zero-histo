@@ -17,3 +17,5 @@
 *.app
 
 test
+
+release/*
